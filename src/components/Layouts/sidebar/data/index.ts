@@ -52,7 +52,7 @@ export const NAV_DATA = [
                         items: [
                             {
                                 title: "Услуги к телефонам",
-                                url: "/tables/phones-transactions",
+                                url: "/tables/phones-services",
                             },
                         ]
                     },

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -11,4 +5,90 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+model Clients {
+  id                  Int                   @id @default(autoincrement())
+  family              String?               @db.VarChar(60)
+  name                String?               @db.VarChar(60)
+  secname             String?               @db.VarChar(60)
+  birthday            DateTime?             @db.Date
+  sex                 String?               @db.VarChar(6)
+  notes               String?               @db.VarChar(120)
+  balance             Decimal               @default(0) @db.Decimal
+  isPositive          Boolean?              @default(dbgenerated("(balance >= (0)::numeric)"))
+  PaymentTransactions PaymentTransactions[]
+  Phones              Phones[]
+}
+
+model PaymentTransactions {
+  id                Int               @id @default(autoincrement())
+  clientId          Int?
+  phoneId           Int?
+  serviceId         Int?
+  transactionTypeId Int?
+  amount            Decimal           @db.Decimal
+  minutesUsed       Int?
+  transactionDate   DateTime          @default(now()) @db.Timestamptz(6)
+  description       String?           @db.VarChar(120)
+  Clients           Clients?          @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Phones            Phones?           @relation(fields: [phoneId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Services          Services?         @relation(fields: [serviceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  TransactionTypes  TransactionTypes? @relation(fields: [transactionTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  PhoneServices     PhoneServices[]
+}
+
+model PhoneServices {
+  id                  Int                  @id @default(autoincrement())
+  phoneId             Int?
+  serviceId           Int?
+  connectDate         DateTime?            @db.Timestamptz(6)
+  paymentId           Int?
+  PaymentTransactions PaymentTransactions? @relation(fields: [paymentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Phones              Phones?              @relation(fields: [phoneId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Services            Services?            @relation(fields: [serviceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model PhoneTypes {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique @db.VarChar(30)
+  Phones Phones[]
+}
+
+model Phones {
+  id                  Int                   @id @default(autoincrement())
+  clientId            Int?
+  number              String?               @db.VarChar(15)
+  phoneTypeId         Int?
+  tariffId            Int?
+  PaymentTransactions PaymentTransactions[]
+  PhoneServices       PhoneServices[]
+  Clients             Clients?              @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  PhoneTypes          PhoneTypes?           @relation(fields: [phoneTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Tariffs             Tariffs?              @relation(fields: [tariffId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Services {
+  id                  Int                   @id @default(autoincrement())
+  name                String?               @db.VarChar(60)
+  serviceFee          Int?
+  description         String?               @db.VarChar(120)
+  PaymentTransactions PaymentTransactions[]
+  PhoneServices       PhoneServices[]
+}
+
+model Tariffs {
+  id              Int      @id @default(autoincrement())
+  name            String?  @db.VarChar(60)
+  monthlyFee      Int?
+  minutesIncluded Int?
+  pricePerMinOver Int?
+  description     String?  @db.VarChar(120)
+  Phones          Phones[]
+}
+
+model TransactionTypes {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique @db.VarChar(30)
+  PaymentTransactions PaymentTransactions[]
 }

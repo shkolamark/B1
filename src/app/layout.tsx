@@ -13,16 +13,16 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
     title: {
-        template: "%s | NextAdmin - Next.js Dashboard Kit",
-        default: "NextAdmin - Next.js Dashboard Kit",
+        template: "%s | B1 Admin",
+        default: "B1 Admin",
     },
     description:
-        "Next.js admin dashboard toolkit with 200+ templates, UI components, and integrations for fast dashboard development.",
+        "Admin panel of a mobile operator B1",
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="ru" suppressHydrationWarning>
             <body>
                 <Providers>
                     <NextTopLoader color="#5750F1" showSpinner={false} />

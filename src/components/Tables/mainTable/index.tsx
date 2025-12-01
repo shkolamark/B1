@@ -10,10 +10,37 @@ import { compactFormat, standardFormat } from "@/lib/format-number";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { getTopChannels } from "../fetch";
+import { ColumnDef, TableProps } from "./types";
 
-export async function MainTable({ className }: { className?: string }) {
-    const data = await getTopChannels();
+async function fetchData(url?: string) {
+    console.log('Fetching ', url);
+    if (!url) return null
+    const res = await fetch(url, { cache: 'no-store' })
+    console.log('Fetch response', res);
+    if (!res.ok) throw new Error('Failed to fetch')
+    console.log('Fetch data', await res.clone().json());
+    return await res.json()
+}
 
+export async function MainTable<T = any>({ className, columns, data, fetchUrl, }: TableProps<T> & { labels?: any[] }) {
+    let rows: T[] | null = data ?? null
+
+    if (!rows) {
+        try {
+            rows = fetchUrl ? await fetchData(fetchUrl) : await getTopChannels()
+        } catch (e) {
+            rows = []
+        }
+    }
+
+    // normalize { items, total } response from list API
+    if (rows && (rows as any).items) rows = (rows as any).items
+
+    // support legacy `labels` prop if passed via page
+    // @ts-ignore allow backward compatibility with ILabel arrays
+    const labels = (arguments[0] as any)?.labels
+    columns = columns ?? (labels ? labels.map((l: any) => ({ id: l.id ?? l.name, header: l.name, accessor: l.name.toLowerCase?.() })) : (rows && rows.length ? Object.keys(rows[0] as unknown as Record<string, any>).map(k => ({ id: k, header: String(k), accessor: String(k) })) : [{ id: 'empty', header: 'No data', accessor: () => '' }]))
+    console.log('Rendering MainTable with rows:', rows);
     return (
         <div
             className={cn(
@@ -21,52 +48,54 @@ export async function MainTable({ className }: { className?: string }) {
                 className,
             )}
         >
-            <h2 className="mb-4 text-body-2xlg font-bold text-dark dark:text-white">
-                Top Channels
-            </h2>
-
             <Table>
                 <TableHeader>
-                    <TableRow className="border-none uppercase [&>th]:text-center">
-                        <TableHead className="min-w-[120px] !text-left">Source</TableHead>
-                        <TableHead>Visitors</TableHead>
-                        <TableHead className="!text-right">Revenues</TableHead>
-                        <TableHead>Sales</TableHead>
-                        <TableHead>Conversion</TableHead>
+                    <TableRow className="border-none uppercase">
+                        {columns.map((col: ColumnDef<T>) => (
+                            <TableHead className={col.headerClass} key={col.id}>
+                                {col.header}
+                            </TableHead>
+                        ))}
                     </TableRow>
                 </TableHeader>
 
                 <TableBody>
-                    {data.map((channel, i) => (
+                    {rows && rows.length ? rows.map((row: any, i: number) => (
                         <TableRow
-                            className="text-center text-base font-medium text-dark dark:text-white"
-                            key={channel.name + i}
+                            className="text-base font-medium text-dark dark:text-white"
+                            key={(row.id ?? row.name ?? i).toString() + ':' + i}
                         >
-                            <TableCell className="flex min-w-fit items-center gap-3">
-                                <Image
-                                    src={channel.logo}
-                                    className="size-8 rounded-full object-cover"
-                                    width={40}
-                                    height={40}
-                                    alt={channel.name + " Logo"}
-                                    role="presentation"
-                                />
-                                <div className="">{channel.name}</div>
-                            </TableCell>
-
-                            <TableCell>{compactFormat(channel.visitors)}</TableCell>
-
-                            <TableCell className="!text-right text-green-light-1">
-                                ${standardFormat(channel.revenues)}
-                            </TableCell>
-
-                            <TableCell>{channel.sales}</TableCell>
-
-                            <TableCell>{channel.conversion}%</TableCell>
+                            {columns!.map((col: ColumnDef<T>) => {
+                                const accessor = col.accessor
+                                let value: any = ''
+                                if (typeof accessor === 'function') {
+                                    value = accessor(row)
+                                } else if (typeof accessor === 'string') {
+                                    if (accessor.includes('.')) {
+                                        value = accessor.split('.').reduce((acc: any, k: string) => acc?.[k], row)
+                                    } else {
+                                        value = row?.[accessor]
+                                    }
+                                } else {
+                                    value = row[col.id]
+                                }
+                                const content = col.render ? col.render(value, row, i) : value
+                                return (
+                                    <TableCell key={String(col.id)} className={col.className}>
+                                        {content}
+                                    </TableCell>
+                                )
+                            })}
                         </TableRow>
-                    ))}
+                    )) : (
+                        <TableRow>
+                            <TableCell colSpan={columns.length}>
+                                No data
+                            </TableCell>
+                        </TableRow>
+                    )}
                 </TableBody>
             </Table>
         </div>
-    );
+    )
 }
