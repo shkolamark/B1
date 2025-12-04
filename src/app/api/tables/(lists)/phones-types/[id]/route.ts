@@ -1,19 +1,34 @@
-import prisma from '@/lib/prisma'
-import { NextResponse } from 'next/server'
+import { jsonOk, jsonError, handleApiError } from '@/app/api/_lib/api-helpers'
+import { getPhoneTypeById, updatePhoneType, deletePhoneType } from './_lib/phones-types.repository'
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
-    const item = await prisma.phoneTypes.findUnique({ where: { id: Number(params.id) } })
-    if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-    return NextResponse.json(item)
+    try {
+        const id = Number(params.id)
+        const item = await getPhoneTypeById(id)
+        if (!item) return jsonError('Not found', 404)
+        return jsonOk(item)
+    } catch (err) {
+        return handleApiError(err)
+    }
 }
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
-    const data = await request.json()
-    const updated = await prisma.phoneTypes.update({ where: { id: Number(params.id) }, data })
-    return NextResponse.json(updated)
+    try {
+        const id = Number(params.id)
+        const data = await request.json()
+        const updated = await updatePhoneType(id, data)
+        return jsonOk(updated)
+    } catch (err) {
+        return handleApiError(err)
+    }
 }
 
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
-    await prisma.phoneTypes.delete({ where: { id: Number(params.id) } })
-    return NextResponse.json({ ok: true })
+    try {
+        const id = Number(params.id)
+        await deletePhoneType(id)
+        return jsonOk({ ok: true })
+    } catch (err) {
+        return handleApiError(err)
+    }
 }

@@ -1,24 +1,25 @@
-import prisma from '@/lib/prisma'
-import { NextResponse } from 'next/server'
+import { phoneTypesQuerySchema, phoneTypeBodySchema } from './_lib/phones-types.schemas'
+import { listPhoneTypes, createPhoneType } from './_lib/phones-types.repository'
+import { jsonOk, jsonCreated, handleApiError } from '@/app/api/_lib/api-helpers'
 
 export async function GET(request: Request) {
-    const url = new URL(request.url)
-    const q = url.searchParams.get('q') ?? ''
-    const page = Number(url.searchParams.get('page') ?? 1)
-    const limit = Number(url.searchParams.get('limit') ?? 50)
-
-    const where: any = {}
-    if (q) where.name = { contains: q, mode: 'insensitive' }
-
-    const [items, total] = await Promise.all([
-        prisma.phoneTypes.findMany({ where, skip: (page - 1) * limit, take: limit }),
-        prisma.phoneTypes.count({ where }),
-    ])
-    return NextResponse.json({ items, total })
+    try {
+        const url = new URL(request.url)
+        const parsed = phoneTypesQuerySchema.parse(Object.fromEntries(url.searchParams))
+        const result = await listPhoneTypes(parsed)
+        return jsonOk(result)
+    } catch (err) {
+        return handleApiError(err)
+    }
 }
 
 export async function POST(request: Request) {
-    const data = await request.json()
-    const created = await prisma.phoneTypes.create({ data })
-    return NextResponse.json(created, { status: 201 })
+    try {
+        const body = await request.json()
+        const parsed = phoneTypeBodySchema.parse(body)
+        const created = await createPhoneType(parsed)
+        return jsonCreated(created)
+    } catch (err) {
+        return handleApiError(err)
+    }
 }
