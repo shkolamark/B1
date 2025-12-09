@@ -7,7 +7,15 @@ export async function GET(request: Request) {
         const url = new URL(request.url)
         const parsed = transactionsQuerySchema.parse(Object.fromEntries(url.searchParams))
         const result = await listTransactions(parsed)
-        return jsonOk(result)
+
+        // Преобразуем Decimal в number для передачи в клиент
+        const items = result.items.map((transaction: any) => ({
+            ...transaction,
+            amount: Number(transaction.amount),
+            Clients: transaction.Clients ? { ...transaction.Clients, balance: Number(transaction.Clients.balance) } : undefined,
+        }))
+
+        return jsonOk({ ...result, items })
     } catch (err) {
         return handleApiError(err)
     }

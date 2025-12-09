@@ -14,7 +14,13 @@ export async function GET(request: NextRequest) {
             limit: Math.min(limit, 999),
         })
 
-        return jsonOk(result)
+        // Преобразуем Decimal в number для передачи в клиент
+        const items = result.items.map((phone: any) => ({
+            ...phone,
+            Clients: phone.Clients ? { ...phone.Clients, balance: Number(phone.Clients.balance) } : undefined,
+        }))
+
+        return jsonOk({ ...result, items })
     } catch (error) {
         return handleApiError(error)
     }

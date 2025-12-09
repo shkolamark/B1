@@ -23,8 +23,9 @@ export default async function PhonesPage({ searchParams }: PhonesPageProps) {
 
     const { items: phonesRaw, total } = await listPhones(query.raw)
 
-    const phones = phonesRaw.map((p) => ({
+    const phones = phonesRaw.map((p: any) => ({
         ...p,
+        Clients: p.Clients ? { ...p.Clients, balance: Number(p.Clients.balance) } : undefined,
     }))
 
     const fetchUrl = buildPhonesFetchUrl('/api/tables/phones', query)

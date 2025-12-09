@@ -5,7 +5,7 @@ import { PhonesQueryInput, PhoneBodyInput } from './phones.schemas'
 export type PhonesListResponse = { items: Phones[]; total: number }
 
 export async function listPhones(query: PhonesQueryInput): Promise<PhonesListResponse> {
-    const { q, clientId, page, limit } = query
+    const { q, clientId, tariffId, page, limit } = query
 
     const where: Prisma.PhonesWhereInput = {}
 
@@ -15,6 +15,7 @@ export async function listPhones(query: PhonesQueryInput): Promise<PhonesListRes
         ]
     }
     if (clientId) where.clientId = Number(clientId)
+    if (tariffId) where.tariffId = Number(tariffId)
 
     const [items, total] = await Promise.all([
         prisma.phones.findMany({

@@ -3,6 +3,7 @@ import { z } from 'zod'
 export const phonesQuerySchema = z.object({
     q: z.string().optional().default(''),
     clientId: z.coerce.number().optional(),
+    tariffId: z.coerce.number().optional(),
     page: z.coerce.number().int().min(1).default(1),
     limit: z.coerce.number().int().min(1).max(200).default(50),
 })

@@ -16,7 +16,13 @@ export async function GET(request: NextRequest) {
         const parsed = clientsQuerySchema.parse(rawQuery)
         const result = await listClients(parsed)
 
-        return jsonOk(result)
+        // Преобразуем Decimal в number для передачи в клиент
+        const items = result.items.map((client: any) => ({
+            ...client,
+            balance: Number(client.balance),
+        }))
+
+        return jsonOk({ ...result, items })
     } catch (error) {
         return handleApiError(error)
     }

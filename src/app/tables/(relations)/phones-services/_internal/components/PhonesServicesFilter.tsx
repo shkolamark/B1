@@ -20,8 +20,8 @@ export default function PhonesServicesFilter() {
 
     useEffect(() => {
         Promise.all([
-            fetch('/api/tables/phones?limit=999').then(r => r.json()),
-            fetch('/api/tables/services?limit=999').then(r => r.json()),
+            fetch('/api/tables/phones/list?limit=999').then(r => r.json()),
+            fetch('/api/tables/services/list?limit=999').then(r => r.json()),
         ]).then(([phonesRes, servicesRes]) => {
             setPhones(phonesRes.items || [])
             setServices(servicesRes.items || [])

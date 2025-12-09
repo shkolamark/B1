@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { listPhoneTypes } from '../../_lib/phones-types.repository'
+import { listPhoneTypes } from '../../(lists)/phones-types/_lib/phones-types.repository'
 import { jsonOk, handleApiError } from '@/app/api/_lib/api-helpers'
 
 export async function GET(request: NextRequest) {

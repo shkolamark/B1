@@ -7,7 +7,14 @@ export async function GET(request: Request) {
         const url = new URL(request.url)
         const parsed = phonesQuerySchema.parse(Object.fromEntries(url.searchParams))
         const result = await listPhones(parsed)
-        return jsonOk(result)
+
+        // Преобразуем Decimal в number для передачи в клиент
+        const items = result.items.map((phone: any) => ({
+            ...phone,
+            Clients: phone.Clients ? { ...phone.Clients, balance: Number(phone.Clients.balance) } : undefined,
+        }))
+
+        return jsonOk({ ...result, items })
     } catch (err) {
         return handleApiError(err)
     }

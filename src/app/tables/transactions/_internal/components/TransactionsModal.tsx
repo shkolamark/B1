@@ -34,10 +34,10 @@ export default function TransactionsModal({
 
     useEffect(() => {
         Promise.all([
-            fetch('/api/tables/clients?limit=999').then(r => r.json()),
-            fetch('/api/tables/phones?limit=999').then(r => r.json()),
-            fetch('/api/tables/services?limit=999').then(r => r.json()),
-            fetch('/api/tables/transactions-types?limit=999').then(r => r.json()),
+            fetch('/api/tables/clients/list?limit=999').then(r => r.json()),
+            fetch('/api/tables/phones/list?limit=999').then(r => r.json()),
+            fetch('/api/tables/services/list?limit=999').then(r => r.json()),
+            fetch('/api/tables/transactions-types/list?limit=999').then(r => r.json()),
         ]).then(([clientsRes, phonesRes, servicesRes, typesRes]) => {
             setClients(clientsRes.items || [])
             setPhones(phonesRes.items || [])

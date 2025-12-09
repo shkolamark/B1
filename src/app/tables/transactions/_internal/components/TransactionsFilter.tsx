@@ -23,8 +23,8 @@ export default function TransactionsFilter() {
 
     useEffect(() => {
         Promise.all([
-            fetch('/api/tables/clients?limit=999').then(r => r.json()),
-            fetch('/api/tables/transactions-types?limit=999').then(r => r.json()),
+            fetch('/api/tables/clients/list?limit=999').then(r => r.json()),
+            fetch('/api/tables/transactions-types/list?limit=999').then(r => r.json()),
         ]).then(([clientsRes, typesRes]) => {
             setClients(clientsRes.items || [])
             setTransactionTypes(typesRes.items || [])

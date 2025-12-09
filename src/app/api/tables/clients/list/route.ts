@@ -12,9 +12,18 @@ export async function GET(request: NextRequest) {
             q: '',
             page: Math.max(1, page),
             limit: Math.min(limit, 999),
+            sort: '',
+            dateStart: '',
+            dateEnd: '',
         })
 
-        return jsonOk(result)
+        // Преобразуем Decimal в number для передачи в клиент
+        const items = result.items.map((client: any) => ({
+            ...client,
+            balance: Number(client.balance),
+        }))
+
+        return jsonOk({ ...result, items })
     } catch (error) {
         return handleApiError(error)
     }

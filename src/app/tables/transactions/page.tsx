@@ -25,9 +25,10 @@ const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
 
     const { items: transactionsRaw, total } = await listTransactions(query.raw)
 
-    const transactions = transactionsRaw.map((t) => ({
+    const transactions = transactionsRaw.map((t: any) => ({
         ...t,
         amount: Number(t.amount),
+        Clients: t.Clients ? { ...t.Clients, balance: Number(t.Clients.balance) } : undefined,
     }))
 
     const fetchUrl = buildTransactionsFetchUrl('/api/tables/transactions', query)

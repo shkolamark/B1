@@ -23,8 +23,8 @@ export default function PhonesFilter() {
 
     React.useEffect(() => {
         Promise.all([
-            fetch('/api/tables/clients?limit=999').then(r => r.json()),
-            fetch('/api/tables/tariffs?limit=999').then(r => r.json()),
+            fetch('/api/tables/clients/list?limit=999').then(r => r.json()),
+            fetch('/api/tables/tariffs/list?limit=999').then(r => r.json()),
         ]).then(([clientsRes, tariffsRes]) => {
             setClients(clientsRes.items || [])
             setTariffs(tariffsRes.items || [])

@@ -28,9 +28,9 @@ export default function PhonesModal({
 
     useEffect(() => {
         Promise.all([
-            fetch('/api/tables/clients?limit=999').then(r => r.json()),
-            fetch('/api/tables/phones-types?limit=999').then(r => r.json()),
-            fetch('/api/tables/tariffs?limit=999').then(r => r.json()),
+            fetch('/api/tables/clients/list?limit=999').then(r => r.json()),
+            fetch('/api/tables/phones-types/list?limit=999').then(r => r.json()),
+            fetch('/api/tables/tariffs/list?limit=999').then(r => r.json()),
         ]).then(([clientsRes, typesRes, tariffsRes]) => {
             setClients(clientsRes.items || [])
             setPhoneTypes(typesRes.items || [])
