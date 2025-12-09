@@ -1,9 +1,10 @@
 import { jsonOk, jsonError, handleApiError } from '@/app/api/_lib/api-helpers'
-import { getPhoneTypeById, updatePhoneType, deletePhoneType } from './_lib/phones-types.repository'
+import { getPhoneTypeById, updatePhoneType, deletePhoneType } from '../_lib/phones-types.repository'
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = Number(params.id)
+        const { id: idStr } = await params
+        const id = Number(idStr)
         const item = await getPhoneTypeById(id)
         if (!item) return jsonError('Not found', 404)
         return jsonOk(item)
@@ -12,9 +13,10 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = Number(params.id)
+        const { id: idStr } = await params
+        const id = Number(idStr)
         const data = await request.json()
         const updated = await updatePhoneType(id, data)
         return jsonOk(updated)
@@ -23,9 +25,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = Number(params.id)
+        const { id: idStr } = await params
+        const id = Number(idStr)
         await deletePhoneType(id)
         return jsonOk({ ok: true })
     } catch (err) {

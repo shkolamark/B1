@@ -17,7 +17,9 @@ export const clientBodySchema = z.object({
     family: z.string().min(1),
     name: z.string().min(1),
     secname: z.string().optional().nullable(),
-    birthday: z.string().datetime().optional().nullable(),
+    birthday: z.string().transform((val) => new Date(val)).refine((date) => !isNaN(date.getTime()), {
+        message: "Invalid date format"
+    }).optional(),
     sex: z.enum(['male', 'female']),
     notes: z.string().optional().nullable(),
     balance: z.number().optional(),
@@ -27,7 +29,13 @@ export const clientUpdateBodySchema = z.object({
     family: z.string().min(1).optional(),
     name: z.string().min(1).optional(),
     secname: z.string().optional().nullable(),
-    birthday: z.string().optional().nullable(),
+    birthday: z.string()
+        .transform((val) => val ? new Date(val) : null)
+        .refine((date) => !date || !isNaN(date.getTime()), {
+            message: "Invalid date format"
+        })
+        .nullable()
+        .optional(),
     sex: z.enum(['male', 'female']).optional(),
     notes: z.string().optional().nullable(),
     balance: z.number().optional(),

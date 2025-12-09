@@ -1,30 +1,48 @@
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
 import { MainTable } from '@/components/Tables/mainTable'
 import { MainTableSkeleton } from '@/components/Tables/mainTable/skeleton'
+import PhonesServicesFilter from './_internal/components/PhonesServicesFilter'
+import AddPhonesServicesButton from './_internal/components/AddPhonesServicesButton'
+import PaginationControls from '@/components/Tables/Pagination/PaginationControls'
+import { listPhoneServices } from '@/app/api/tables/(relations)/phones-services/_lib/phones-services.repository'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
-import prisma from '@/lib/prisma'
+import { phonesServicesColumns } from './_internal/config/columns'
+import { buildPhonesServicesQuery, PhonesServicesSearchParams } from './_internal/lib/params'
+import { buildPhonesServicesFetchUrl } from './_internal/lib/url'
 
 export const metadata: Metadata = { title: 'Услуги к телефонам' }
 
-const columns = [
-    { id: 'id', header: 'ID', accessor: 'id' },
-    { id: 'client', header: 'Услуга', accessor: (r: any) => r.Services?.name ?? '' },
-    { id: 'phone', header: 'Телефон', accessor: (r: any) => r.Phones?.number ?? '' },
-    { id: 'date', header: 'Оплата', accessor: (r: any) => r.PaymentTransactions.amount ?? "" },
-    { id: 'payment', header: 'Дата подключения', accessor: (r: any) => new Date(r.connectDate).toLocaleString() },
-]
-export default async function PhonesServicesPage({ searchParams }: { searchParams: any }) {
+type PhonesServicesPageProps = {
+    searchParams?: Promise<PhonesServicesSearchParams>
+}
+
+export default async function PhonesServicesPage({ searchParams }: PhonesServicesPageProps) {
     const params = await searchParams
-    const qs = new URLSearchParams(Object.entries(params ?? {})).toString()
-    const phonesServices = await prisma.phoneServices.findMany({ include: { Phones: true, PaymentTransactions: true, Services: true }, take: 200, orderBy: { connectDate: 'desc' } })
-    const fetchUrl = `/api/tables/phones-services${qs ? `?${qs}` : ''}`
+    const query = buildPhonesServicesQuery(params)
+
+    const { items: phonesServicesRaw, total } = await listPhoneServices(query.raw)
+
+    const phonesServices = phonesServicesRaw.map((ps) => ({
+        ...ps,
+    }))
+
+    const fetchUrl = buildPhonesServicesFetchUrl('/api/tables/(relations)/phones-services', query)
+
     return (
         <>
             <Breadcrumb pageName="Услуги к телефонам" />
             <div className="space-y-10">
-                <Suspense fallback={<MainTableSkeleton columns={columns} />}>
-                    <MainTable columns={columns} data={phonesServices} />
+                <div className="flex items-center gap-5 justify-between">
+                    <PhonesServicesFilter />
+                    <div className="flex flex-col items-center gap-2 justify-between">
+                        <AddPhonesServicesButton />
+                        <PaginationControls total={total} limit={query.limit || 10} />
+                    </div>
+                </div>
+
+                <Suspense fallback={<MainTableSkeleton columns={phonesServicesColumns} />}>
+                    <MainTable columns={phonesServicesColumns} data={phonesServices} fetchUrl={fetchUrl} />
                 </Suspense>
             </div>
         </>

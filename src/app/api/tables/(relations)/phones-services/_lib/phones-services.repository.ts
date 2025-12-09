@@ -7,7 +7,6 @@ export type PhonesServicesListResponse = { items: PhoneServices[]; total: number
 export async function listPhoneServices(query: PhonesServicesQueryInput): Promise<PhonesServicesListResponse> {
     const { q, phoneId, serviceId, page, limit } = query
     const where: Prisma.PhoneServicesWhereInput = {}
-    if (q) where.notes = { contains: q, mode: 'insensitive' }
     if (phoneId) where.phoneId = Number(phoneId)
     if (serviceId) where.serviceId = Number(serviceId)
 

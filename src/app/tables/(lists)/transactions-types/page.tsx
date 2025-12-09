@@ -1,27 +1,48 @@
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
 import { MainTable } from '@/components/Tables/mainTable'
 import { MainTableSkeleton } from '@/components/Tables/mainTable/skeleton'
+import TransactionTypesFilter from './_internal/components/TransactionTypesFilter'
+import AddTransactionTypesButton from './_internal/components/AddTransactionTypesButton'
+import PaginationControls from '@/components/Tables/Pagination/PaginationControls'
+import { listTransactionTypes } from '@/app/api/tables/(lists)/transactions-types/_lib/transactions-types.repository'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
-import prisma from '@/lib/prisma'
+import { transactionTypesColumns } from './_internal/config/columns'
+import { buildTransactionTypesQuery, TransactionTypesSearchParams } from './_internal/lib/params'
+import { buildTransactionTypesFetchUrl } from './_internal/lib/url'
 
 export const metadata: Metadata = { title: 'Типы транзакций' }
 
-const columns = [
-    { id: 'id', header: 'ID', accessor: 'id' },
-    { id: 'name', header: 'Название', accessor: 'name' },
-]
+type TransactionTypesPageProps = {
+    searchParams?: Promise<TransactionTypesSearchParams>
+}
 
-export default async function TransactionsTypesPage({ searchParams }: { searchParams: any }) {
+export default async function TransactionsTypesPage({ searchParams }: TransactionTypesPageProps) {
     const params = await searchParams
-    const qs = new URLSearchParams(Object.entries(params ?? {})).toString()
-    const transactionTypes = await prisma.transactionTypes.findMany({ take: 200 })
+    const query = buildTransactionTypesQuery(params)
+
+    const { items: transactionTypesRaw, total } = await listTransactionTypes(query.raw)
+
+    const transactionTypes = transactionTypesRaw.map((tt) => ({
+        ...tt,
+    }))
+
+    const fetchUrl = buildTransactionTypesFetchUrl('/api/tables/(lists)/transactions-types', query)
+
     return (
         <>
             <Breadcrumb pageName="Типы транзакций" />
             <div className="space-y-10">
-                <Suspense fallback={<MainTableSkeleton columns={columns} />}>
-                    <MainTable columns={columns} data={transactionTypes} />
+                <div className="flex items-center gap-5 justify-between">
+                    <TransactionTypesFilter />
+                    <div className="flex flex-col items-center gap-2 justify-between">
+                        <AddTransactionTypesButton />
+                        <PaginationControls total={total} limit={query.limit || 10} />
+                    </div>
+                </div>
+
+                <Suspense fallback={<MainTableSkeleton columns={transactionTypesColumns} />}>
+                    <MainTable columns={transactionTypesColumns} data={transactionTypes} fetchUrl={fetchUrl} />
                 </Suspense>
             </div>
         </>

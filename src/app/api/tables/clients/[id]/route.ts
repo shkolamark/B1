@@ -13,11 +13,12 @@ const idSchema = z.object({
     id: z.coerce.number().int().positive(),
 })
 
-type IdParams = { params: { id: string } }
+type IdParams = { params: Promise<{ id: string }> }
 
 export async function GET(_req: NextRequest, { params }: IdParams) {
     try {
-        const { id } = idSchema.parse(params)
+        const resolvedParams = await params
+        const { id } = idSchema.parse(resolvedParams)
         const client = await getClientById(id)
         if (!client) return jsonError('Not found', 404)
         return jsonOk(client)
@@ -28,7 +29,8 @@ export async function GET(_req: NextRequest, { params }: IdParams) {
 
 export async function PUT(request: NextRequest, { params }: IdParams) {
     try {
-        const { id } = idSchema.parse(params)
+        const resolvedParams = await params
+        const { id } = idSchema.parse(resolvedParams)
         const body = await request.json()
         const parsed = clientUpdateBodySchema.parse(body)
 
@@ -41,7 +43,8 @@ export async function PUT(request: NextRequest, { params }: IdParams) {
 
 export async function DELETE(_req: NextRequest, { params }: IdParams) {
     try {
-        const { id } = idSchema.parse(params)
+        const resolvedParams = await params
+        const { id } = idSchema.parse(resolvedParams)
         await deleteClient(id)
         return jsonOk({ ok: true })
     } catch (error) {

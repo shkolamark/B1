@@ -1,9 +1,10 @@
 import { jsonOk, jsonError, handleApiError } from '@/app/api/_lib/api-helpers'
-import { getTransactionTypeById, updateTransactionType, deleteTransactionType } from './_lib/transactions-types.repository'
+import { getTransactionTypeById, updateTransactionType, deleteTransactionType } from '../_lib/transactions-types.repository'
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = Number(params.id)
+        const { id: idStr } = await params
+        const id = Number(idStr)
         const item = await getTransactionTypeById(id)
         if (!item) return jsonError('Not found', 404)
         return jsonOk(item)
@@ -12,9 +13,10 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = Number(params.id)
+        const { id: idStr } = await params
+        const id = Number(idStr)
         const data = await request.json()
         const updated = await updateTransactionType(id, data)
         return jsonOk(updated)
@@ -23,9 +25,10 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     }
 }
 
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
-        const id = Number(params.id)
+        const { id: idStr } = await params
+        const id = Number(idStr)
         await deleteTransactionType(id)
         return jsonOk({ ok: true })
     } catch (err) {

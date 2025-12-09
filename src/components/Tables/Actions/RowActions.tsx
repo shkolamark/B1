@@ -2,9 +2,21 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import ClientModal from '@/components/Clients/ClientModal'
+import { toast } from 'react-toastify'
 
-export default function RowActions({ row }: { row: any }) {
+export default function RowActions({
+    row,
+    modalComponent: ModalComponent,
+    apiPath,
+    successMessage = 'Запись успешно удалена!',
+    errorMessage = 'Ошибка при удалении'
+}: {
+    row: any
+    modalComponent: React.ComponentType<{ defaults?: any; onClose: () => void }>
+    apiPath: string
+    successMessage?: string
+    errorMessage?: string
+}) {
     const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
     const [deleting, setDeleting] = useState(false)
@@ -13,21 +25,24 @@ export default function RowActions({ row }: { row: any }) {
         if (!confirm('Удалить запись?')) return
         setDeleting(true)
         try {
-            await axios.delete(`/api/tables/clients/${row.id}`)
+            await axios.delete(`${apiPath}/${row.id}`)
+            toast.success(successMessage)
             router.refresh()
         } catch (e) {
             console.error(e)
-            alert('Ошибка при удалении')
+            toast.error(errorMessage)
         } finally {
             setDeleting(false)
         }
     }
 
     return (
-        <div className="flex gap-2 items-center justify-center">
-            <button className="btn btn-ghost" onClick={() => setIsOpen(true)}>Изменить</button>
-            <button className="btn btn-danger" onClick={onDelete} disabled={deleting}>{deleting ? 'Удаление...' : 'Удалить'}</button>
-            {isOpen && <ClientModal defaults={row} onClose={() => setIsOpen(false)} />}
+        <div className="flex items-center justify-start">
+            <button className="btn btn-ghost text-primary mr-5" onClick={() => setIsOpen(true)}>Изменить</button>
+            <button className="btn btn-danger text-red-600" onClick={onDelete} disabled={deleting}>
+                {deleting ? 'Удаление...' : 'Удалить'}
+            </button>
+            {isOpen && <ModalComponent defaults={row} onClose={() => setIsOpen(false)} />}
         </div>
     )
 }

@@ -10,6 +10,7 @@ import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 import type { PropsWithChildren } from "react";
 import { Providers } from "./providers";
+import { ToastContainer } from 'react-toastify'
 
 export const metadata: Metadata = {
     title: {
@@ -25,6 +26,18 @@ export default function RootLayout({ children }: PropsWithChildren) {
         <html lang="ru" suppressHydrationWarning>
             <body>
                 <Providers>
+                    <ToastContainer
+                        position="bottom-right"
+                        autoClose={3000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="colored"
+                    />
                     <NextTopLoader color="#5750F1" showSpinner={false} />
 
                     <div className="flex min-h-screen">

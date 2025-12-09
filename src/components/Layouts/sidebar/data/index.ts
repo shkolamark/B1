@@ -38,11 +38,11 @@ export const NAV_DATA = [
                         title: "Справочники",
                         items: [
                             {
-                                title: "Типы транзакций",
+                                title: "Типы телефонов",
                                 url: "/tables/phones-types",
                             },
                             {
-                                title: "Типы телефонов",
+                                title: "Типы транзакций",
                                 url: "/tables/transactions-types",
                             },
                         ]

@@ -1,32 +1,48 @@
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
 import { MainTable } from '@/components/Tables/mainTable'
 import { MainTableSkeleton } from '@/components/Tables/mainTable/skeleton'
+import PhonesFilter from './_internal/components/PhonesFilter'
+import AddPhonesButton from './_internal/components/AddPhonesButton'
+import PaginationControls from '@/components/Tables/Pagination/PaginationControls'
+import { listPhones } from '@/app/api/tables/phones/_lib/phones.repository'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
+import { phonesColumns } from './_internal/config/columns'
+import { buildPhonesQuery, PhonesSearchParams } from './_internal/lib/params'
+import { buildPhonesFetchUrl } from './_internal/lib/url'
 
 export const metadata: Metadata = { title: 'Номера' }
 
-const columns = [
-    { id: 'id', header: 'ID', accessor: 'id' },
-    { id: 'number', header: 'Номер', accessor: 'number' },
-    { id: 'client', header: 'Клиент', accessor: (r: any) => `${r.Clients?.family ?? ''} ${r.Clients?.name ?? ''}` },
-    { id: 'type', header: 'Тип', accessor: (r: any) => r.PhoneTypes?.name ?? '' },
-    { id: 'tariff', header: 'Тариф', accessor: (r: any) => r.Tariffs?.name ?? '' },
-]
+type PhonesPageProps = {
+    searchParams?: Promise<PhonesSearchParams>
+}
 
-import prisma from '@/lib/prisma'
-
-export default async function PhonesPage({ searchParams }: { searchParams: any }) {
+export default async function PhonesPage({ searchParams }: PhonesPageProps) {
     const params = await searchParams
-    const qs = new URLSearchParams(Object.entries(params ?? {})).toString()
-    // server data fetch for now to confirm server connectivity
-    const phones = await prisma.phones.findMany({ include: { Clients: true, PhoneTypes: true, Tariffs: true }, take: 100 })
+    const query = buildPhonesQuery(params)
+
+    const { items: phonesRaw, total } = await listPhones(query.raw)
+
+    const phones = phonesRaw.map((p) => ({
+        ...p,
+    }))
+
+    const fetchUrl = buildPhonesFetchUrl('/api/tables/phones', query)
+
     return (
         <>
             <Breadcrumb pageName="Номера" />
             <div className="space-y-10">
-                <Suspense fallback={<MainTableSkeleton columns={columns} />}>
-                    <MainTable columns={columns} data={phones} />
+                <div className="flex items-center gap-5 justify-between">
+                    <PhonesFilter />
+                    <div className="flex flex-col items-center gap-2 justify-between">
+                        <AddPhonesButton />
+                        <PaginationControls total={total} limit={query.limit || 10} />
+                    </div>
+                </div>
+
+                <Suspense fallback={<MainTableSkeleton columns={phonesColumns} />}>
+                    <MainTable columns={phonesColumns} data={phones} fetchUrl={fetchUrl} />
                 </Suspense>
             </div>
         </>

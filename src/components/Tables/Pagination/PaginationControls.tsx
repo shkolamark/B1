@@ -1,35 +1,71 @@
-"use client"
+// components/Tables/Pagination/PaginationControls.tsx
+'use client'
+
 import React, { useState, useTransition } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { Button } from '@/components/ui-elements/button'
 
-export default function PaginationControls({ total }: { total?: number }) {
+type Props = {
+    total: number
+    limit: number
+}
+
+export default function PaginationControls({ total, limit }: Props) {
     const router = useRouter()
     const searchParams = useSearchParams()
     const pathname = usePathname()
+
     const [loadingLocal, setLoadingLocal] = useState(false)
     const [isPending, startTransition] = useTransition()
-    const page = Number(searchParams.get('page') ?? 1)
-    const limit = Number(searchParams.get('limit') ?? 50)
-    const last = total ? Math.max(1, Math.ceil(total / limit)) : undefined
 
-    const goto = async (p: number) => {
-        const params = new URLSearchParams(Object.fromEntries(searchParams.entries()))
-        if (p <= 1) { params.delete('page') } else { params.set('page', String(p)) }
+    const page = Number(searchParams.get('page') ?? 1) || 1
+
+    const last = Math.max(1, Math.ceil(total / limit))
+
+    const goto = (p: number) => {
+        if (p < 1 || p > last) return
+
+        const params = new URLSearchParams(searchParams)
+
+        if (p <= 1) {
+            params.delete('page')
+        } else {
+            params.set('page', String(p))
+        }
+
         setLoadingLocal(true)
+
         startTransition(() => {
             router.push(`${pathname}?${params.toString()}`)
+            // после смены URL начнётся навигация, компонент перерисуется;
+            // можно полагаться на isPending, но локный флаг тоже ок
             setLoadingLocal(false)
         })
     }
 
-    // loading state managed by component and React transition
     const loading = loadingLocal || isPending
 
     return (
         <div className="flex items-center gap-2 justify-end">
-            <button className="btn btn-ghost" onClick={() => goto(page - 1)} disabled={page <= 1 || loading}>Prev</button>
-            <span>{page}{last ? ` / ${last}` : ''}</span>
-            <button className="btn btn-ghost" onClick={() => goto(page + 1)} disabled={(last && page >= last) || loading}>Next</button>
+            <Button
+                className="btn btn-primary"
+                variant="dark"
+                shape="full"
+                size="soSmall"
+                onClick={() => goto(page - 1)}
+                disabled={page <= 1 || loading}
+                label="Назад"
+            />
+            <span>{page} / {last}</span>
+            <Button
+                className="btn btn-primary"
+                variant="dark"
+                shape="full"
+                size="soSmall"
+                onClick={() => goto(page + 1)}
+                disabled={page >= last || loading}
+                label="Вперед"
+            />
         </div>
     )
 }

@@ -1,38 +1,50 @@
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
 import { MainTable } from '@/components/Tables/mainTable'
 import { MainTableSkeleton } from '@/components/Tables/mainTable/skeleton'
+import TariffsFilter from './_internal/components/TariffsFilter'
+import AddTariffsButton from './_internal/components/AddTariffsButton'
+import PaginationControls from '@/components/Tables/Pagination/PaginationControls'
+import { listTariffs } from '@/app/api/tables/tariffs/_lib/tariffs.repository'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
-
-
-
+import { tariffsColumns } from './_internal/config/columns'
+import { buildTariffsQuery, TariffsSearchParams } from './_internal/lib/params'
+import { buildTariffsFetchUrl } from './_internal/lib/url'
 
 export const metadata: Metadata = { title: 'Тарифы' }
 
-const columns = [
-    { id: 'id', header: 'ID', accessor: 'id' },
-    { id: 'name', header: 'Название', accessor: 'name' },
-    { id: 'monthlyFee', header: 'Месячная плата', accessor: 'monthlyFee' },
-    { id: 'minutes', header: 'Минут в пакете', accessor: 'minutesIncluded' },
-    { id: 'pricePerMin', header: 'Цена за минуту (сверх)', accessor: 'pricePerMinOver' },
-]
+type TariffsPageProps = {
+    searchParams?: Promise<TariffsSearchParams>
+}
 
-import prisma from '@/lib/prisma'
-
-const TariffsPage = async ({ searchParams }: { searchParams: any }) => {
+export default async function TariffsPage({ searchParams }: TariffsPageProps) {
     const params = await searchParams
-    const qs = new URLSearchParams(Object.entries(params ?? {})).toString()
-    const tariffs = await prisma.tariffs.findMany({ take: 100 })
+    const query = buildTariffsQuery(params)
+
+    const { items: tariffsRaw, total } = await listTariffs(query.raw)
+
+    const tariffs = tariffsRaw.map((t) => ({
+        ...t,
+    }))
+
+    const fetchUrl = buildTariffsFetchUrl('/api/tables/tariffs', query)
+
     return (
         <>
             <Breadcrumb pageName="Тарифы" />
             <div className="space-y-10">
-                <Suspense fallback={<MainTableSkeleton columns={columns} />}>
-                    <MainTable columns={columns} data={tariffs} />
+                <div className="flex items-center gap-5 justify-between">
+                    <TariffsFilter />
+                    <div className="flex flex-col items-center gap-2 justify-between">
+                        <AddTariffsButton />
+                        <PaginationControls total={total} limit={query.limit || 10} />
+                    </div>
+                </div>
+
+                <Suspense fallback={<MainTableSkeleton columns={tariffsColumns} />}>
+                    <MainTable columns={tariffsColumns} data={tariffs} fetchUrl={fetchUrl} />
                 </Suspense>
             </div>
         </>
     )
 }
-
-export default TariffsPage;

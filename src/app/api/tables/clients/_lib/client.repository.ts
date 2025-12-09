@@ -10,6 +10,7 @@ export type ClientsListResponse = {
     items: Clients[]
     total: number
 }
+import { ClientUpdateBodyInput } from './client.schemas'
 
 export async function listClients(query: ClientsQueryInput): Promise<ClientsListResponse> {
     const { q, sex, minBalance, page, limit, sort, dateStart, dateEnd } = query
@@ -41,9 +42,9 @@ export async function listClients(query: ClientsQueryInput): Promise<ClientsList
     const orderBy: Prisma.ClientsOrderByWithRelationInput = sort
         ? (() => {
             const [field, dir] = sort.split(':')
-            return { [field]: dir === 'desc' ? 'desc' : 'asc' } as Prisma.ClientsOrderByWithRelationInput
+            return { [field]: dir === 'asc' ? 'asc' : 'desc' } as Prisma.ClientsOrderByWithRelationInput
         })()
-        : { id: 'asc' }
+        : { id: 'desc' }
 
     const [itemsRaw, total] = await Promise.all([
         prisma.clients.findMany({
@@ -77,7 +78,7 @@ export async function getClientById(id: number): Promise<Clients | null> {
 
 export async function updateClient(
     id: number,
-    data: Partial<ClientBodyInput>
+    data: ClientUpdateBodyInput
 ): Promise<Clients> {
     return prisma.clients.update({
         where: { id },
