@@ -36,9 +36,11 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
         <>
             <Breadcrumb pageName="Клиенты" exportable exportPath="/api/tables/clients/export" exportFileName="clients.csv" />
             <div className="space-y-10">
-                <div className="flex items-center gap-5 justify-between">
-                    <ClientsFilter />
-                    <div className="flex flex-col items-center gap-2 justify-between grow">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-5 justify-between">
+                    <div className="w-full md:flex-1">
+                        <ClientsFilter />
+                    </div>
+                    <div className="flex w-full md:w-auto flex-col items-center gap-2">
                         <AddClientsButton />
                         <PaginationControls total={total} limit={query.limit || 10} />
                     </div>

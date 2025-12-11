@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useTransition } from 'react'
-import { Button } from '@/components/ui-elements/button'
+import { Button } from '@/components/UI/ui-elements/button'
 import InputGroup from '@/components/FormElements/InputGroup'
 import { Select } from '@/components/FormElements/select'
 
@@ -50,8 +50,8 @@ export default function TransactionsFilter() {
 
     return (
         <div className='rounded-[10px] bg-white p-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card w-full'>
-            <div className='flex gap-4 justify-between flex-wrap items-end'>
-                <div className='flex gap-2'>
+            <div className='flex gap-4 justify-between flex-wrap items-end"'>
+                <div className='flex gap-2 flex-wrap"'>
                     <InputGroup
                         label="Описание"
                         placeholder="Поиск по описанию..."
@@ -74,7 +74,7 @@ export default function TransactionsFilter() {
                     />
 
                     <Select
-                        label="Тип транзакции"
+                        label="Транзакции"
                         value={filters.transactionTypeId}
                         onChange={(e) => setFilters({ ...filters, transactionTypeId: e.target.value })}
                         items={[
@@ -87,7 +87,7 @@ export default function TransactionsFilter() {
                     />
                 </div>
 
-                <div className='flex gap-2'>
+                <div className='flex gap-2 items-end'>
                     <Button
                         label="Применить"
                         variant="primary"

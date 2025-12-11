@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import TariffsModal from './TariffsModal'
-import { Button } from '@/components/ui-elements/button'
+import { Button } from '@/components/UI/ui-elements/button'
 
 export default function AddTariffsButton() {
     const [open, setOpen] = useState(false)

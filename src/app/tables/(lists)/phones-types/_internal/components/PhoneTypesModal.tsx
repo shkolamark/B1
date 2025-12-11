@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
-import { Button } from '@/components/ui-elements/button'
+import { Button } from '@/components/UI/ui-elements/button'
 import InputGroup from '@/components/FormElements/InputGroup'
 
 export default function PhoneTypesModal({

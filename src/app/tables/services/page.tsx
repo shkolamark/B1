@@ -33,9 +33,11 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
         <>
             <Breadcrumb pageName="Услуги" exportable exportPath="/api/tables/services/export" exportFileName="services.csv" />
             <div className="space-y-10">
-                <div className="flex items-center gap-5 justify-between">
-                    <ServicesFilter />
-                    <div className="flex flex-col items-center gap-2 justify-between">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-5 justify-between">
+                    <div className="w-full md:flex-1">
+                        <ServicesFilter />
+                    </div>
+                    <div className="flex w-full md:w-auto flex-col items-center gap-2">
                         <AddServicesButton />
                         <PaginationControls total={total} limit={query.limit || 10} />
                     </div>

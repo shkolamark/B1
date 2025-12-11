@@ -34,9 +34,11 @@ export default async function PhonesPage({ searchParams }: PhonesPageProps) {
         <>
             <Breadcrumb pageName="Номера" exportable exportPath="/api/tables/phones/export" exportFileName="phones.csv" />
             <div className="space-y-10">
-                <div className="flex items-center gap-5 justify-between">
-                    <PhonesFilter />
-                    <div className="flex flex-col items-center gap-2 justify-between">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-5 justify-between">
+                    <div className="w-full md:flex-1">
+                        <PhonesFilter />
+                    </div>
+                    <div className="flex w-full md:w-auto flex-col items-center gap-2">
                         <AddPhonesButton />
                         <PaginationControls total={total} limit={query.limit || 10} />
                     </div>

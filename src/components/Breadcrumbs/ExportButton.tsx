@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { Button } from '@/components/ui-elements/button'
+import { Button } from '@/components/UI/ui-elements/button'
 import excelImg from '@/assets/excel.png'
 
 type Props = {

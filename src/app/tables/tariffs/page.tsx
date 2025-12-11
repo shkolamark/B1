@@ -33,9 +33,11 @@ export default async function TariffsPage({ searchParams }: TariffsPageProps) {
         <>
             <Breadcrumb pageName="Тарифы" exportable exportPath="/api/tables/tariffs/export" exportFileName="tariffs.csv" />
             <div className="space-y-10">
-                <div className="flex items-center gap-5 justify-between">
-                    <TariffsFilter />
-                    <div className="flex flex-col items-center gap-2 justify-between">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-5 justify-between">
+                    <div className="w-full md:flex-1">
+                        <TariffsFilter />
+                    </div>
+                    <div className="flex w-full md:w-auto flex-col items-center gap-2">
                         <AddTariffsButton />
                         <PaginationControls total={total} limit={query.limit || 10} />
                     </div>

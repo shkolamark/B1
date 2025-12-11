@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import ClientsModal from './ClientsModal'
-import { Button } from '@/components/ui-elements/button'
+import { Button } from '@/components/UI/ui-elements/button'
 
 export default function AddClientsButton() {
     const [open, setOpen] = useState(false)

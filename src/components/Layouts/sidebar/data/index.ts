@@ -58,50 +58,6 @@ export const NAV_DATA = [
                     },
                 ],
             },
-            {
-                title: "Forms",
-                icon: Icons.Alphabet,
-                items: [
-                    {
-                        title: "Form Elements",
-                        url: "/forms/form-elements",
-                    },
-                    {
-                        title: "Form Layout",
-                        url: "/forms/form-layout",
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        label: "OTHERS",
-        items: [
-            {
-                title: "Charts",
-                icon: Icons.PieChart,
-                items: [
-                    {
-                        title: "Basic Chart",
-                        url: "/charts/basic-chart",
-                    },
-                ],
-            },
-            {
-                title: "UI Elements",
-                icon: Icons.FourCircle,
-                items: [
-                    {
-                        title: "Alerts",
-                        url: "/ui-elements/alerts",
-                    },
-                    {
-                        title: "Buttons",
-                        url: "/ui-elements/buttons",
-                    },
-                ],
-            },
-
         ],
     },
 ];

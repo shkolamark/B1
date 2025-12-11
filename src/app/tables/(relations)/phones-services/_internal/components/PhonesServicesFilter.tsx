@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useTransition } from 'react'
-import { Button } from '@/components/ui-elements/button'
+import { Button } from '@/components/UI/ui-elements/button'
 import { Select } from '@/components/FormElements/select'
 
 export default function PhonesServicesFilter() {

@@ -1,6 +1,6 @@
 "use client";
 
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/UI/logo";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -111,9 +111,11 @@ export function Sidebar() {
                         ))}
                     </div>
                 </div>
-                <div className="fixed bottom-0 w-[290px]">
-                    <ThemeToggleSwitch />
-                </div>
+                {isOpen &&
+                    <div className="fixed bottom-0 w-[290px]">
+                        <ThemeToggleSwitch />
+                    </div>
+                }
             </aside>
         </>
     );

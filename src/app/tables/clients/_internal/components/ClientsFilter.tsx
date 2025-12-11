@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useTransition } from 'react'
-import { Button } from '@/components/ui-elements/button'
+import { Button } from '@/components/UI/ui-elements/button'
 import InputGroup from '@/components/FormElements/InputGroup'
 import { Select } from '@/components/FormElements/select'
 import DatePicker from '@/components/FormElements/DatePicker/DatePicker'
@@ -41,7 +41,7 @@ export default function ClientsFilter() {
     return (
         <div className='rounded-[10px] bg-white p-7.5 shadow-1 dark:bg-gray-dark dark:shadow-card w-full'>
             <div className='flex gap-4 justify-between flex-wrap  items-end'>
-                <div className='flex gap-2'>
+                <div className='flex gap-2 flex-wrap'>
                     <InputGroup
                         label="ФИО"
                         placeholder="Поиск по имени или фамилии"

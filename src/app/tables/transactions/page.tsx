@@ -37,9 +37,11 @@ const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
         <>
             <Breadcrumb pageName="Транзакции" exportable exportPath="/api/tables/transactions/export" exportFileName="transactions.csv" />
             <div className="space-y-10">
-                <div className="flex items-center gap-5 justify-between">
-                    <TransactionsFilter />
-                    <div className="flex flex-col items-center gap-2 justify-between">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-5 justify-between">
+                    <div className="w-full md:flex-1">
+                        <TransactionsFilter />
+                    </div>
+                    <div className="flex w-full md:w-auto flex-col items-center gap-2">
                         <AddTransactionsButton />
                         <PaginationControls total={total} limit={query.limit || 10} />
                     </div>

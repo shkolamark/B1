@@ -1,4 +1,4 @@
-import { PeriodPicker } from "@/components/period-picker";
+import { PeriodPicker } from "@/components/UI/period-picker";
 import { cn } from "@/lib/utils";
 import { getWeeksProfitData } from "@/services/charts.services";
 import { ProfitDiagramChart } from "./chart";
