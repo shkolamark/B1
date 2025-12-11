@@ -31,7 +31,7 @@ export default async function TransactionsTypesPage({ searchParams }: Transactio
 
     return (
         <>
-            <Breadcrumb pageName="Типы транзакций" />
+            <Breadcrumb pageName="Типы транзакций" exportable exportPath="/api/tables/transactions-types/export" exportFileName="transactions-types.csv" />
             <div className="space-y-10">
                 <div className="flex items-center gap-5 justify-between">
                     <TransactionTypesFilter />

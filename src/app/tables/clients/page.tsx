@@ -34,7 +34,7 @@ export default async function ClientsPage({ searchParams }: ClientsPageProps) {
 
     return (
         <>
-            <Breadcrumb pageName="Клиенты" />
+            <Breadcrumb pageName="Клиенты" exportable exportPath="/api/tables/clients/export" exportFileName="clients.csv" />
             <div className="space-y-10">
                 <div className="flex items-center gap-5 justify-between">
                     <ClientsFilter />

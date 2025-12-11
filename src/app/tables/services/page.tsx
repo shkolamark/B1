@@ -31,7 +31,7 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
 
     return (
         <>
-            <Breadcrumb pageName="Услуги" />
+            <Breadcrumb pageName="Услуги" exportable exportPath="/api/tables/services/export" exportFileName="services.csv" />
             <div className="space-y-10">
                 <div className="flex items-center gap-5 justify-between">
                     <ServicesFilter />

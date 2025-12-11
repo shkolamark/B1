@@ -32,7 +32,7 @@ export default async function PhonesPage({ searchParams }: PhonesPageProps) {
 
     return (
         <>
-            <Breadcrumb pageName="Номера" />
+            <Breadcrumb pageName="Номера" exportable exportPath="/api/tables/phones/export" exportFileName="phones.csv" />
             <div className="space-y-10">
                 <div className="flex items-center gap-5 justify-between">
                     <PhonesFilter />

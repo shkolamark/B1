@@ -11,7 +11,6 @@ export async function getDashboardData() {
 
     const transactionsCount = await prisma.paymentTransactions.count()
 
-    // ✅ Сумма по модулю всех транзакций
     const transactions = await prisma.paymentTransactions.findMany({
         select: { amount: true }
     })

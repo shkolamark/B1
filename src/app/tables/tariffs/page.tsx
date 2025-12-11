@@ -31,7 +31,7 @@ export default async function TariffsPage({ searchParams }: TariffsPageProps) {
 
     return (
         <>
-            <Breadcrumb pageName="Тарифы" />
+            <Breadcrumb pageName="Тарифы" exportable exportPath="/api/tables/tariffs/export" exportFileName="tariffs.csv" />
             <div className="space-y-10">
                 <div className="flex items-center gap-5 justify-between">
                     <TariffsFilter />

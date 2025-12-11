@@ -35,7 +35,7 @@ const TransactionsPage = async ({ searchParams }: TransactionsPageProps) => {
 
     return (
         <>
-            <Breadcrumb pageName="Транзакции" />
+            <Breadcrumb pageName="Транзакции" exportable exportPath="/api/tables/transactions/export" exportFileName="transactions.csv" />
             <div className="space-y-10">
                 <div className="flex items-center gap-5 justify-between">
                     <TransactionsFilter />

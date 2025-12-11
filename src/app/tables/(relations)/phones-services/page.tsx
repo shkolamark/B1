@@ -31,7 +31,7 @@ export default async function PhonesServicesPage({ searchParams }: PhonesService
 
     return (
         <>
-            <Breadcrumb pageName="Услуги к телефонам" />
+            <Breadcrumb pageName="Услуги к телефонам" exportable exportPath="/api/tables/phones-services/export" exportFileName="phones-services.csv" />
             <div className="space-y-10">
                 <div className="flex items-center gap-5 justify-between">
                     <PhonesServicesFilter />
