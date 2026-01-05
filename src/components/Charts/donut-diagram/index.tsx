@@ -1,4 +1,4 @@
-import { PeriodPicker } from "@/components/UI/period-picker";
+import { PeriodPicker } from "@/components/ui/period-picker";
 import { cn } from "@/lib/utils";
 import { getDevicesUsedData } from "@/services/charts.services";
 import { DonutChart } from "./chart";

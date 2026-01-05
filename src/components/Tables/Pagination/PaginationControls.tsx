@@ -3,7 +3,7 @@
 
 import React, { useState, useTransition } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { Button } from '@/components/UI/ui-elements/button'
+import { Button } from '@/components/ui/ui-elements/button'
 
 type Props = {
     total: number

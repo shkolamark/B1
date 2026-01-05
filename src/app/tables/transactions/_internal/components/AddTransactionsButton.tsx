@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import TransactionsModal from './TransactionsModal'
-import { Button } from '@/components/UI/ui-elements/button'
+import { Button } from '@/components/ui/ui-elements/button'
 
 export default function AddTransactionsButton() {
     const [open, setOpen] = useState(false)

@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import PhonesModal from './PhonesModal'
-import { Button } from '@/components/UI/ui-elements/button'
+import { Button } from '@/components/ui/ui-elements/button'
 
 export default function AddPhonesButton() {
     const [open, setOpen] = useState(false)
