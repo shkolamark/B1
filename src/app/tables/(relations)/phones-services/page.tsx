@@ -14,7 +14,7 @@ import { buildPhonesServicesFetchUrl } from './_internal/lib/url'
 export const metadata: Metadata = { title: 'Услуги к телефонам' }
 
 type PhonesServicesPageProps = {
-    searchParams?: Promise<PhonesServicesSearchParams>
+    searchParams?: Promise<PhonesServicesSearchParams> 
 }
 
 export default async function PhonesServicesPage({ searchParams }: PhonesServicesPageProps) {
